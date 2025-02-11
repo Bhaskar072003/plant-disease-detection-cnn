@@ -1,17 +1,26 @@
 import os
 import streamlit as st
 import numpy as np
+import gdown
 from PIL import Image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 
-# Define the path to your model
-MODEL_PATH = "https://drive.google.com/file/d/1rEh8-tW0bhoJIa7yvdjZshZZQ4KmLais/view?usp=drive_link"
+# Define the Google Drive file ID (Extract from shareable link)
+FILE_ID = "1rEh8-tW0bhoJIa7yvdjZshZZQ4KmLais"  
+MODEL_PATH = "my_model.h5"  # Local path after downloading
+
+# Function to download the model from Google Drive
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        st.info("📥 Downloading model...")
+        gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", MODEL_PATH, quiet=False)
 
 # Load the trained model
 @st.cache_resource  # Cache model loading for better performance
 def load_trained_model():
     try:
+        download_model()  # Ensure model is downloaded
         model = load_model(MODEL_PATH)
         st.success("✅ Model loaded successfully!")
         return model
